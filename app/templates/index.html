@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Task Management Agent</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>AI Task Management Agent</h1>
+      <p>
+        Enter a high-level use case or feature description below. The AI will
+        attempt to break it down into sub-tasks and allocate them to available
+        developers.
+      </p>
+      <textarea
+        id="useCaseInput"
+        rows="6"
+        placeholder="e.g., As a user, I want to be able to reset my password via email..."
+      ></textarea>
+      <button id="processButton">Process Use Case</button>
+
+      <div id="loadingIndicator" style="display: none">
+        Processing... Please wait.
+      </div>
+
+      <h2>Results:</h2>
+      <div id="resultsArea">
+        <p>Results will appear here.</p>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("processButton")
+        .addEventListener("click", async () => {
+          const useCaseText = document
+            .getElementById("useCaseInput")
+            .value.trim();
+          const resultsArea = document.getElementById("resultsArea");
+          const loadingIndicator = document.getElementById("loadingIndicator");
+
+          if (!useCaseText) {
+            resultsArea.innerHTML =
+              '<p style="color: red;">Please enter a use case description.</p>';
+            return;
+          }
+
+          resultsArea.innerHTML = "";
+          loadingIndicator.style.display = "block";
+
+          try {
+            const response = await fetch("/process_use_case", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ use_case: useCaseText }),
+            });
+
+            loadingIndicator.style.display = "none";
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              resultsArea.innerHTML = `<p style="color: red;">Error: ${
+                response.status
+              } - ${errorData.error || "Unknown error"}</p>`;
+              return;
+            }
+
+            const data = await response.json();
+            displayResults(data, resultsArea);
+          } catch (error) {
+            loadingIndicator.style.display = "none";
+            resultsArea.innerHTML = `<p style="color: red;">Network or client-side error: ${error.message}</p>`;
+            console.error("Fetch error:", error);
+          }
+        });
+
+      function displayResults(data, container) {
+        if (data.error) {
+          container.innerHTML = `<p style="color: red;">Error from server: ${data.error}</p>`;
+          return;
+        }
+
+        let html = "<h3>Allocated Tasks:</h3>";
+        if (data.allocated_tasks && data.allocated_tasks.length > 0) {
+          html += "<ul>";
+          data.allocated_tasks.forEach((task) => {
+            const assigneeName = task.assigned_to
+              ? task.assigned_to.name
+              : "Unassigned";
+            html += `
+                        <li>
+                            <strong>${task.title}</strong> (<em>${task.category}, Effort: ${task.effort}</em>)
+                            <p style="margin-left: 20px;">${task.description}</p>
+                            <p style="margin-left: 20px; color: #007bff;">Assigned to: ${assigneeName}</p>
+                        </li>`;
+          });
+          html += "</ul>";
+        } else {
+          html += "<p>No tasks were allocated.</p>";
+        }
+
+        
+        container.innerHTML = html;
+      }
+    </script>
+  </body>
+</html>
