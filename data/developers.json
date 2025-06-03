@@ -1,0 +1,55 @@
+
+[
+    {
+        "id": "dev1",
+        "name": "Alice Wonderland",
+        "skills": ["Frontend", "React", "JavaScript", "CSS", "UI/UX"],
+        "experience": {
+            "Frontend": 5,
+            "UI/UX": 3
+        },
+        "current_workload_score": 2
+    },
+    {
+        "id": "dev2",
+        "name": "Bob The Builder",
+        "skills": ["Backend", "Python", "Flask", "API", "Database"],
+        "experience": {
+            "Backend": 4,
+            "Database": 4,
+            "API": 3
+        },
+        "current_workload_score": 1
+    },
+    {
+        "id": "dev3",
+        "name": "Charlie Root",
+        "skills": ["Database", "SQL", "PostgreSQL", "Optimization", "Backend"],
+        "experience": {
+            "Database": 6,
+            "Backend": 2
+        },
+        "current_workload_score": 3
+    },
+    {
+        "id": "dev4",
+        "name": "Diana Prince",
+        "skills": ["QA", "Testing", "Automation", "Frontend"],
+        "experience": {
+            "QA": 4,
+            "Frontend": 2
+        },
+        "current_workload_score": 0
+    },
+    {
+        "id": "dev5",
+        "name": "Eve Coder",
+        "skills": ["Frontend", "Backend", "Python", "JavaScript", "DevOps"],
+        "experience": {
+            "Frontend": 3,
+            "Backend": 3,
+            "DevOps": 2
+        },
+        "current_workload_score": 2
+    }
+]
